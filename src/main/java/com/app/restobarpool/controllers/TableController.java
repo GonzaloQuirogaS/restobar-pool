@@ -60,7 +60,29 @@ public class TableController {
     @Operation(summary = "Update table by ID")
     public ResponseEntity<?> updateTableById(@PathVariable Long id, @RequestBody SaveTableDto saveTableDto) {
         try {
-            return ResponseEntity.ok(tableService.updateById(id,saveTableDto));
+            return ResponseEntity.ok(tableService.updateById(id, saveTableDto));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error");
+        }
+    }
+
+    @PutMapping("/set_initial/{id}")
+    @Tag(name = "TABLE")
+    @Operation(summary = "Set initial time")
+    public ResponseEntity<?> setInitialTime(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(tableService.setInitialTime(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error");
+        }
+    }
+
+    @PutMapping("/set_final/{id}")
+    @Tag(name = "TABLE")
+    @Operation(summary = "Set final time")
+    public ResponseEntity<?> setFinalTime(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(tableService.setFinalTime(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error");
         }

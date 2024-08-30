@@ -9,6 +9,7 @@ import com.app.restobarpool.services.ITableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,4 +57,22 @@ public class TableServiceImpl implements ITableService {
 
         return mapper.mapToTableDto(table);
     }
+
+    @Override
+    public Table setInitialTime(Long id) {
+        Table table = tableRepository.findById(id).orElseThrow();
+        table.setInitial_time(LocalDateTime.now());
+        tableRepository.save(table);
+        return table;
+    }
+
+    @Override
+    public Table setFinalTime(Long id) {
+        Table table = tableRepository.findById(id).orElseThrow();
+        table.setFinal_time(LocalDateTime.now());
+        tableRepository.save(table);
+        return table;
+    }
+
+
 }
