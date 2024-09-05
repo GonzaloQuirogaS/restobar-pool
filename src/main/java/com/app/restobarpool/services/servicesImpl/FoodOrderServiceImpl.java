@@ -22,12 +22,6 @@ public class FoodOrderServiceImpl implements IFoodOrderService {
     private final FoodRepository foodRepository;
     private final FoodOrderMapper mapper;
 
-    //Creo un arraylist de comidas de forma global para ir agregando
-    List<Food> foods = new ArrayList<>();
-
-    //Creo un foodOrder de forma global para operar sobre el
-    FoodOrder foodOrder = new FoodOrder();
-
     @Override
     public List<FoodOrderDto> findAllFoodOrder() {
         List<FoodOrder> foodOrders = foodOrderRepository.findAll();
@@ -35,36 +29,40 @@ public class FoodOrderServiceImpl implements IFoodOrderService {
     }
 
     @Override
-    public FoodOrderDto addFoodToOrder(Long id) {
+    public FoodOrderDto addFoodToOrder(Long idFoodOrder, Long idFood) {
+
+        //Busco el food order por id
+        FoodOrder foodOrder = foodOrderRepository.findById(idFoodOrder).orElseThrow();
+
+        //Obtengo el array de comidas  para ir agregando
+        List<Food> foods = foodOrder.getFoods();
+
+        //Si el array de foods esta vacio crea uno nuevo, caso contrario utiliza el traido desde la foodOrder
+        if (foods == null) {
+            foods = new ArrayList<>();
+        }
 
         //Busco la comida por id y la agrego al arraylist
-        Food food = foodRepository.findById(id).orElseThrow();
+        Food food = foodRepository.findById(idFood).orElseThrow();
         foods.add(food);
 
         //Creo la variable sum_total y mediante .sum() voy sumando todos los precios del arraylist foods
-        double sum_total;
-        sum_total = foods.stream().mapToDouble(Food::getPrice).sum();
+        double sum_total = foods.stream().mapToDouble(Food::getPrice).sum();
 
         //Seteo el total y las comidas en foodOrder
         foodOrder.setTotal_foods(sum_total);
         foodOrder.setFoods(foods);
 
+        foodOrderRepository.save(foodOrder);
         return mapper.mapToFoodOrderDto(foodOrder);
     }
 
     @Override
-    public FoodOrderDto saveFoodOrder() {
-
+    public FoodOrderDto generateFoodOrder() {
+        FoodOrder foodOrder = new FoodOrder();
         //Guardo la foodOrder
         foodOrderRepository.save(foodOrder);
-
-        //Copio foodOrder en la variable foodOrder1 para devolverla como respuesta
-        FoodOrder foodOrder1 = new FoodOrder(foodOrder.getId(), new ArrayList<>(foodOrder.getFoods()), foodOrder.getTotal_foods());
-
-        //Reseteo foodOrder y foods para seguir operando de ser necesario
-        foodOrder = new FoodOrder();
-        foods.clear();
-        return mapper.mapToFoodOrderDto(foodOrder1);
+        return mapper.mapToFoodOrderDto(foodOrder);
     }
 
 }

@@ -8,7 +8,7 @@ public interface IFoodOrderService {
 
     List<FoodOrderDto> findAllFoodOrder();
 
-    FoodOrderDto addFoodToOrder(Long id);
+    FoodOrderDto addFoodToOrder(Long idFoodOrder, Long idFood);
 
-    FoodOrderDto saveFoodOrder();
+    FoodOrderDto generateFoodOrder();
 }

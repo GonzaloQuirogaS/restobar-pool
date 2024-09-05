@@ -23,16 +23,20 @@ public class FoodOrderController {
 
     @PostMapping("/add/{id}")
     @Tag(name = "FOOD ORDER")
-    @Operation(summary = "Add food in food orders by id")
-    private ResponseEntity<?> addFoodInOrder(@PathVariable Long id) {
-        return ResponseEntity.ok(foodOrderService.addFoodToOrder(id));
+    @Operation(summary = "Add food in food orders by id, receiving the id of foodOrder by parameter and the id of food by body ")
+    private ResponseEntity<?> addFoodInOrder(@PathVariable Long id, @RequestBody Long idFood) {
+        try {
+            return ResponseEntity.ok(foodOrderService.addFoodToOrder(id, idFood));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error");
+        }
     }
 
     @PostMapping("/save")
     @Tag(name = "FOOD ORDER")
-    @Operation(summary = "Save food orders")
-    private ResponseEntity<?> saveFoodOrder() {
-        return ResponseEntity.ok(foodOrderService.saveFoodOrder());
+    @Operation(summary = "Generate food order")
+    private ResponseEntity<?> generateFoodOrder() {
+        return ResponseEntity.ok(foodOrderService.generateFoodOrder());
     }
 
 }
